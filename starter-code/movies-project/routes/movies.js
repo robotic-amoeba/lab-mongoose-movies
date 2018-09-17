@@ -1,9 +1,10 @@
-const router = require('./index');
 const mongoose = require('mongoose');
 const Movie = require('../models/movie.js');
+const express = require('express');
+const router = express.Router();
 
 
-router.get('/movies', (req, res, next) => {
+router.get('/', (req, res, next) => {
   Movie.find({})
     .then(movies => {
       res.render('movies/index', { movies })
@@ -11,11 +12,11 @@ router.get('/movies', (req, res, next) => {
     .catch(e => console.log(e))
 })
 
-router.get('/movies/new', (req, res, next) => {
+router.get('/new', (req, res, next) => {
   res.render('./movies/new')
 })
 
-router.get('/movies/:id', (req, res, next) => {  //DETAILS menu
+router.get('/:id', (req, res, next) => {  //DETAILS menu
   let id = req.params.id;
   Movie.findById({ _id: id })
     .then(movie => {
@@ -25,11 +26,11 @@ router.get('/movies/:id', (req, res, next) => {  //DETAILS menu
     })
 })
 
-router.post('/movies', (req, res, next) => {
+router.post('/', (req, res, next) => {
   let data = req.body;
   let movie = new Movie({ title: data.title, genre: data.genre, plot: data.plot })
   movie.save()
-    .then(() => res.redirect('/movies'))
+    .then(() => res.redirect('/'))
     .catch(() => res.render('/movies/new'))
 })
 

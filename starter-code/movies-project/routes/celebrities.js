@@ -1,9 +1,10 @@
-const router = require('./index');
+const express = require('express');
+const router = express.Router();
 const mongoose = require('mongoose');
 const Celebrity = require('../models/celebrity');
 
 
-router.get('/celebrities', (req, res, next) => { //READ LIST
+router.get('/', (req, res, next) => { //READ LIST
   Celebrity.find({})
     .then(celebrities => {
       res.render('celebrities/index', { celebrities })
@@ -11,18 +12,18 @@ router.get('/celebrities', (req, res, next) => { //READ LIST
     .catch(e => console.log(e))
 })
 
-router.get('/celebrities/new', (req, res, next) => { //CREATE menu
+router.get('/new', (req, res, next) => { //CREATE menu
   res.render('celebrities/new')
 })
 
 
-router.get('/celebrities/:id', (req, res, next) => {  //READ DETAIL menu
+router.get('/:id', (req, res, next) => {  //READ DETAIL menu
   Celebrity.findById({ _id: req.params.id })
     .then(celebrity => res.render('celebrities/show', { celebrity }))
     .catch(e => console.log(e))
 })
 
-router.post('/celebrities', (req, res, next) => {  //CREATE exe
+router.post('/', (req, res, next) => {  //CREATE exe
   let data = req.body;
   let celebrity = new Celebrity({ name: data.name, occupation: data.occupation, catchPhrase: data.catchPhrase });
   celebrity.save()
@@ -31,21 +32,21 @@ router.post('/celebrities', (req, res, next) => {  //CREATE exe
     .catch(() => res.render('/celebrities/new'))
 })
 
-router.post('/celebrities/:id/delete', (req, res, next) => { //DELETE exe
+router.post('/:id/delete', (req, res, next) => { //DELETE exe
   let id = req.params.id;
   Celebrity.findByIdAndDelete({ _id: id })
     .then(res.redirect('/celebrities'))
     .catch(e => console.log(e))
 })
 
-router.get('/celebrities/:id/edit', (req, res, next) => {  //UPDATE menu
+router.get('/:id/edit', (req, res, next) => {  //UPDATE menu
   let id = req.params.id;
   Celebrity.findById({_id: id})
     .then(celebrity => res.render('./celebrities/edit', {celebrity}))
     .catch(e => console.log(e))
 })
 
-router.post('/celebrities/:id', (req, res, next) => {  //UPDATE exe
+router.post('/:id', (req, res, next) => {  //UPDATE exe
   let data = req.body;
   let celebrity = { name: data.name, occupation: data.occupation, catchPhrase: data.catchPhrase };
   console.log (celebrity)
